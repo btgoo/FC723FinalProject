@@ -49,15 +49,27 @@ class Burak757:
     # Function to book a seat
     def book_seat(self, seat_number):
         if seat_number in self.seat_bookings:  # Check if the seat is already booked
-            print(f"Seat {seat_number} is already booked.")
+            print(f"Seat {seat_number} is already booked.")\
+
+        # Validate if the seat number is within the valid range
+        # Slices the string and checks the digit part of the seat label and if the digit is past 80
+        if not (seat_number[:-1].isdigit() and 1 <= int(seat_number[:-1]) <= self.num_columns):
+            print("Invalid seat number. Please enter a valid seat number.")
+            return
+
+        # Validate if the seat letter is within the valid range
+        # Slices the string and checks the letter part of the seat label and if the letter is past F
+        if not (seat_number[-1].isalpha() and ord(seat_number[-1].upper()) - ord('A') < self.num_rows):
+            print("Invalid seat number. Please enter a valid seat number.")
+            return
+
+        # Check if the seat is aisle, storage area, or already booked
+        if seat_number in ["77D", "77E", "77F", "78D", "78E", "78F", "X", "S"]:
+            print("Sorry, the seat you are trying to book is either an aisle or part of the storage area.")
         else:
-            # Check if the seat is aisle, storage area, or already booked
-            if seat_number in ["77D", "77E", "77F", "78D", "78E", "78F", "X", "S"]:
-                print("Sorry, the seat you are trying to book is either an aisle or part of the storage area.")
-            else:
-                self.seat_bookings[seat_number] = "R"  # Book the seat
-                print(f"Seat {seat_number} has been booked successfully.")
-                self.display_floor_plan()  # Update floor plan after booking
+            self.seat_bookings[seat_number] = "R"  # Book the seat
+            print(f"Seat {seat_number} has been booked successfully.")
+            self.display_floor_plan()  # Update floor plan after booking
 
     def free_seat(self, seat_number):
         if seat_number in self.seat_bookings:  # Check if the seat is booked
