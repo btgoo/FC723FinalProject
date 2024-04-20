@@ -97,6 +97,16 @@ class Burak757:
             elif choice == "3":
                 seat_number = input("Enter seat number to book (e.g., 1A): ").upper()
                 self.book_seat(seat_number)  # Book a seat
+            elif choice == "4":
+                seat_number = input("Enter seat number to free (e.g., 1A): ").upper()
+                self.free_seat(seat_number)  # Free a seat
+            elif choice == "5":
+                self.show_booking_state()  # Show booking state
+            elif choice == "6":
+                print("Exiting program.")  # Exit the program
+                break
+            else:
+                print("Invalid choice. Please enter a valid option.")  # Print for invalid choice
 
 if __name__ == "__main__":
     burak757 = Burak757()
