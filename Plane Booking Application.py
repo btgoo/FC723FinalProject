@@ -59,6 +59,23 @@ class Burak757:
                 print(f"Seat {seat_number} has been booked successfully.")
                 self.display_floor_plan()  # Update floor plan after booking
 
+    def free_seat(self, seat_number):
+        if seat_number in self.seat_bookings:  # Check if the seat is booked
+            del self.seat_bookings[seat_number]  # Remove the booking
+            print(f"Seat {seat_number} has been freed successfully.")
+            self.display_floor_plan()  # Update floor plan after freeing
+        else:
+            print(f"Seat {seat_number} is not booked.")  # Print if the seat is not booked
+
+    # Function to show the booking state
+    def show_booking_state(self):
+        print("Booking State:")
+        if self.seat_bookings:
+            for seat, booked in self.seat_bookings.items():  # Loop through booked seats
+                print(f"Seat {seat}: {'Booked' if booked else 'Available'}")  # Print booking status
+        else:
+            print("There is no active booking right now")   # Print this message if there is no booking
+
     # Main function to display the menu and handle user input
     def main(self):
         while True:
