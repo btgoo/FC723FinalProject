@@ -2,7 +2,6 @@ import csv  # Import the csv module to work with CSV files
 import random  # Import the random module to generate random booking references
 import string  # Import the string module to generate random letters
 
-
 class Burak757:  # Define the Burak757 class
     def __init__(self):  # Constructor method to initialise the class
         # Initialize an empty dictionary to store seat bookings with booking references
@@ -35,7 +34,7 @@ class Burak757:  # Define the Burak757 class
     def display_floor_plan(self):
         print("Floor Plan:\n"
               "F - Free Seat   S - Storage Area    X - Aisle\n"
-              "Reference Code will be shown if seat is reserved")  # Print a header for the floor plan
+              "The respective reference number will be shown next to the seat")  # Print a header for the floor plan
         for row_num, row in enumerate(self.floor_plan):  # Loop through each row
             updated_row = []  # Initialize an empty list for the updated row
             for seat in row:  # Loop through each seat in the row
