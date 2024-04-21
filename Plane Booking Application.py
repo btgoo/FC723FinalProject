@@ -1,11 +1,17 @@
+import csv
+import random
+import string
+
+
 class Burak757:
     def __init__(self):
-        self.seat_bookings = {} # Initialise an empty dictionary to store seat bookings
+        # Initialize an empty dictionary to store seat bookings with booking references
+        self.seat_bookings = {}
 
         # Define the layout of the Burak757 floor plan
-        self.num_rows = 7    # There would be 7 rows, A-F rows and X aisle
+        self.num_rows = 7  # There would be 7 rows, A-F rows and X aisle
         self.num_columns = 80
-        self.floor_plan = []    # Initialise an empty list to illustrate the floor plan
+        self.floor_plan = []
 
         # Generate floor plan
         for row_num in range(self.num_rows):  # Loop through each row
@@ -32,7 +38,8 @@ class Burak757:
             updated_row = []  # Initialize an empty list for the updated row
             for seat in row:  # Loop through each seat in the row
                 if seat in self.seat_bookings:  # Check if the seat is booked
-                    updated_row.append(f"{seat} R")  # Add 'R' for booked seats
+                    reference = self.seat_bookings[seat][0]  # Get booking reference
+                    updated_row.append(f"{seat} {reference}")  # Add seat label with booking reference
                 elif seat in ["X   ", "S   "]:  # Check if it's aisle or storage area
                     updated_row.append(seat)  # Don't add any label after 'X' or 'S'
                 else:
@@ -44,21 +51,21 @@ class Burak757:
         if seat_number in self.seat_bookings:  # Check if the seat is booked
             print(f"Seat {seat_number} is already booked.")
         else:
-            print(f"Seat {seat_number} is available.")  # Print if the seat is available
+            print(f"Seat {seat_number} is available.")  # Print if the seat is available.
 
     # Function to book a seat
     def book_seat(self, seat_number):
-        if seat_number in self.seat_bookings:  # Check if the seat is already booked
-            print(f"Seat {seat_number} is already booked.")\
+        # Check if the seat is already booked
+        if seat_number in self.seat_bookings:
+            print(f"Seat {seat_number} is already booked.")
+            return
 
         # Validate if the seat number is within the valid range
-        # Slices the string and checks the digit part of the seat label and if the digit is past 80
         if not (seat_number[:-1].isdigit() and 1 <= int(seat_number[:-1]) <= self.num_columns):
             print("Invalid seat number. Please enter a valid seat number.")
             return
 
         # Validate if the seat letter is within the valid range
-        # Slices the string and checks the letter part of the seat label and if the letter is past F
         if not (seat_number[-1].isalpha() and ord(seat_number[-1].upper()) - ord('A') < self.num_rows):
             print("Invalid seat number. Please enter a valid seat number.")
             return
@@ -67,26 +74,52 @@ class Burak757:
         if seat_number in ["77D", "77E", "77F", "78D", "78E", "78F", "X", "S"]:
             print("Sorry, the seat you are trying to book is either an aisle or part of the storage area.")
         else:
-            self.seat_bookings[seat_number] = "R"  # Book the seat
-            print(f"Seat {seat_number} has been booked successfully.")
+            booking_reference = self.generate_booking_reference()  # Generate booking reference
+            passport_number, first_name, last_name = self.get_user_details()  # Get user details
+            self.seat_bookings[seat_number] = (
+            booking_reference, passport_number, first_name, last_name)  # Book the seat with booking reference
+            print(f"Seat {seat_number} has been booked successfully with booking reference {booking_reference}.")
+            self.save_booking_details_to_csv(seat_number, booking_reference, passport_number, first_name,
+                                             last_name)  # Save booking details to CSV
             self.display_floor_plan()  # Update floor plan after booking
 
+    # Function to generate a random alphanumeric booking reference
+    def generate_booking_reference(self):
+        while True:
+            reference = ''.join(
+                random.choices(string.ascii_uppercase + string.digits, k=8))  # Generate random reference
+            if reference not in [booking[0] for booking in self.seat_bookings.values()]:  # Check if reference is unique
+                return reference
+
+    # Function to gather user details for booking
+    def get_user_details(self):
+        passport_number = input("Enter passport number: ")
+        first_name = input("Enter first name: ")
+        last_name = input("Enter last name: ")
+        return passport_number, first_name, last_name
+
+    # Function to save booking details to a CSV file
+    def save_booking_details_to_csv(self, seat_number, booking_reference, passport_number, first_name, last_name):
+        with open('booking_details.csv', mode='a', newline='') as file:
+            writer = csv.writer(file)
+            writer.writerow([f"Booking for {first_name} {last_name}", f"Seat Label: {seat_number}",
+                             f"Booking Reference: {booking_reference}", f"Passport Number: {passport_number}",
+                             f"First Name: {first_name}", f"Last Name: {last_name}"])
+
+    # Function to free a booked seat
     def free_seat(self, seat_number):
         if seat_number in self.seat_bookings:  # Check if the seat is booked
             del self.seat_bookings[seat_number]  # Remove the booking
             print(f"Seat {seat_number} has been freed successfully.")
             self.display_floor_plan()  # Update floor plan after freeing
         else:
-            print(f"Seat {seat_number} is not booked.")  # Print if the seat is not booked
+            print(f"Seat {seat_number} is not booked.")  # Print if the seat is not booked.
 
     # Function to show the booking state
     def show_booking_state(self):
         print("Booking State:")
-        if self.seat_bookings:
-            for seat, booked in self.seat_bookings.items():  # Loop through booked seats
-                print(f"Seat {seat}: {'Booked' if booked else 'Available'}")  # Print booking status
-        else:
-            print("There is no active booking right now")   # Print this message if there is no booking
+        for seat, (reference, _, _, _) in self.seat_bookings.items():  # Loop through booked seats
+            print(f"Seat {seat}: Booked with booking reference {reference}")  # Print booking reference
 
     # Main function to display the menu and handle user input
     def main(self):
@@ -119,6 +152,7 @@ class Burak757:
                 break
             else:
                 print("Invalid choice. Please enter a valid option.")  # Print for invalid choice
+
 
 if __name__ == "__main__":
     burak757 = Burak757()
