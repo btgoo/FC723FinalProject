@@ -10,7 +10,7 @@ class Burak757:  # Define the Burak757 class
 
         # Define the layout of the Burak757 floor plan
         self.num_rows = 7  # There would be 7 rows, A-F rows and X aisle
-        self.num_columns = 80
+        self.num_columns = 80   # There would 80 columns, 1-80
         self.floor_plan = []
 
         # Generate floor plan
@@ -63,11 +63,13 @@ class Burak757:  # Define the Burak757 class
             return
 
         # Validate if the seat number is within the valid range
+        # Slices the string and checks the digit part of the seat label and if the digit is past 80
         if not (seat_number[:-1].isdigit() and 1 <= int(seat_number[:-1]) <= self.num_columns):
             print("Invalid seat number. Please enter a valid seat number.")  # Print if the seat number is invalid
             return
 
         # Validate if the seat letter is within the valid range
+        # Slices the string and checks the letter part of the seat label and if the letter is past F
         if not (seat_number[-1].isalpha() and ord(seat_number[-1].upper()) - ord('A') < self.num_rows):
             print("Invalid seat number. Please enter a valid seat number.")  # Print if the seat number is invalid
             return
